@@ -10,7 +10,9 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 #Set project name
 PROJECT(tabix)
 
-if(NOT ZLIB_LIBRARY)
+SET(ZLIB_LIBRARY "" CACHE STRING "Some user-specified option")
+
+if(ZLIB_LIBRARY STREQUAL "") 
   include(zlib.cmake)
 endif()
 
