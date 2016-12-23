@@ -10,11 +10,12 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 #Set project name
 PROJECT(tabix)
 
-SET(ZLIB_LIBRARY "" CACHE STRING "Some user-specified option")
+option (ZLIB_LIBRARY "Use tutorial provided math implementation" OFF)
+option (ZLIB_INCLUDE "Use tutorial provided math implementation" OFF)
 
-if(ZLIB_LIBRARY STREQUAL "") 
-  message("adding zlib to tabix")
+if (NOT ZLIB_LIBRARY)
   include(zlib.cmake)
+  set(ADD_ZLIB_PROJECT TRUE)
 endif()
 
 INCLUDE_DIRECTORIES(${ZLIB_INCLUDE})
@@ -69,5 +70,7 @@ add_executable(bgzip
 target_link_libraries(tabix ${ZLIB_LIBRARY})
 target_link_libraries(bgzip ${ZLIB_LIBRARY})
 
-add_dependencies(tabix ${ZLIB_PROJECT})
-add_dependencies(bgzip ${ZLIB_PROJECT})
+if (ADD_ZLIB_PROJECT)
+  add_dependencies(tabix ${ZLIB_PROJECT})
+  add_dependencies(bgzip ${ZLIB_PROJECT})
+endif()
