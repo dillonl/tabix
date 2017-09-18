@@ -18,18 +18,15 @@ if (NOT ZLIB_LIBRARY)
   set(ADD_ZLIB_PROJECT TRUE)
 endif()
 
-INCLUDE_DIRECTORIES(${ZLIB_INCLUDE})
+INCLUDE_DIRECTORIES(${ZLIB_INCLUDE} ${PROJECT_SOURCE_DIR})
 
 IF("${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}")
   MESSAGE(SEND_ERROR "In-source builds are not allowed, please build this in the bin directory!")
 ENDIF("${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
 set(TABIX_SOURCE
-  bedidx.c
-  bgzf.c
-  index.c
-  knetfile.c
-  kstring.c
   main.c
 )
 
@@ -39,11 +36,10 @@ set(BGZIP_SOURCE
 )
 
 set(TABIX_LIB_SOURCE
-  main.c
   bgzip.c
-  bedidx.c
   bgzf.c
   index.c
+  bedidx.c
   knetfile.c
   kstring.c
 )
@@ -58,19 +54,22 @@ set_target_properties(libtabix
 )
 
 #create binary
-add_executable(tabix
-  ${TABIX_SOURCE}
-)
+#add_executable(tabix
+#  ${TABIX_SOURCE}
+#)
 
 #create binary
 add_executable(bgzip
   ${BGZIP_SOURCE}
 )
 
-target_link_libraries(tabix ${ZLIB_LIBRARY})
+target_link_libraries(libtabix ${ZLIB_LIBRARY})
 target_link_libraries(bgzip ${ZLIB_LIBRARY})
+#target_link_libraries(tabix libtabix ${ZLIB_LIBRARY})
+
 
 if (ADD_ZLIB_PROJECT)
-  add_dependencies(tabix ${ZLIB_PROJECT})
+  add_dependencies(libtabix ${ZLIB_PROJECT})
   add_dependencies(bgzip ${ZLIB_PROJECT})
+#  add_dependencies(tabix libtabix ${ZLIB_PROJECT})
 endif()
